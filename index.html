@@ -9,6 +9,7 @@
         .header{
             background-color: black;
             margin-bottom: 4em;
+            width:100%;
 
         }
         .header-title {
@@ -39,76 +40,85 @@
         <div class="container">
             <button class="btn btn-primary" @click="modalAddCustomer">Add New Customer</button>
             <hr>
-            <table class="table table-hover table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th>Marrital Status</th>
-                        <th>Address</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(customer, index) in customers" :key="index">
-                        <td>{{ customer.name }}</td>
-                        <td>{{ customer.email }}</td>
-                        <td>{{ customer.gender }}</td>
-                        <td>{{ customer.is_married }}</td>
-                        <td>{{ customer.address }}</td>
-                        <td>
-                            <div class="action">
-                                <a href="#">
-                                    <b-icon icon="eye"></b-icon>
-                                </a>
-                                <a href="javascript:void(0)" v-on:click="modalEditCustomer(customer.customer_id)">
-                                    <b-icon icon="pencil"></b-icon>
-                                </a>
-                                <a href="javascript:void(0)" v-on:click="deleteCustomer(customer.customer_id)">
-                                    <b-icon icon="trash"></b-icon>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+
+                <table class="table table-hover table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>Marital Status</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(customer, index) in customers" :key="index">
+                            <td>{{ customer.name }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.gender }}</td>
+                            <td>{{ customer.is_married }}</td>
+                            <td>{{ customer.address }}</td>
+                            <td>
+                                <div class="action">
+                                    <a href="javascript:void(0)" v-on:click="modalDetailCustomer(customer.customer_id)">
+                                        <b-icon icon="eye"></b-icon>
+                                    </a>
+                                    <a href="javascript:void(0)" v-on:click="modalEditCustomer(customer.customer_id)">
+                                        <b-icon icon="pencil"></b-icon>
+                                    </a>
+                                    <a href="javascript:void(0)" v-on:click="deleteCustomer(customer.customer_id)">
+                                        <b-icon icon="trash"></b-icon>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
-            <b-modal ref="modaAddCustomer" title="Add New User" hide-footer>
+            <b-modal ref="modaAddCustomer" id="modaAddCustomer" title="Add New User" hide-footer v-show="showModal">
                 <b-form v-on:submit.prevent="onCreate">
                     <b-form-group id="name" label="Name :" label-for="name">
-                        <b-form-input id="name" type="text" placeholder="Enter Name" v-model="add.name"></b-form-input>
+                        <b-form-input id="name" aria-describedby="name" type="text" placeholder="Enter Name" v-model="customer.name" :class="errors.name ? 'is-invalid' : ''"></b-form-input>
+                        <b-form-invalid-feedback id="name" v-if="errors.name">{{ errors.name[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="email" label="Email :" label-for="email">
-                        <b-form-input id="email" type="text" placeholder="Enter Email" v-model="add.email"></b-form-input>
+                        <b-form-input id="email" type="text" placeholder="Enter Email" v-model="customer.email" :class="errors.email ? 'is-invalid' : ''"></b-form-input>
+                        <b-form-invalid-feedback id="email" v-if="errors.email">{{ errors.email[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="password" label="Password :" label-for="password">
-                        <b-form-input id="password" type="text" placeholder="Enter Password" v-model="add.password"></b-form-input>
+                        <b-form-input id="password" type="text" placeholder="Enter Password" v-model="customer.password" :class="errors.password ? 'is-invalid' : ''"></b-form-input>
+                        <b-form-invalid-feedback id="password" v-if="errors.password">{{ errors.password[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="gender" label="Gender :" label-for="gender">
-                        <b-form-select id="gender" class="form-control" v-model="add.gender" :options="[{ text: 'Choose...', value: null },{ text: 'Laki-Laki', value: 1 },,{ text: 'Perempuan', value: 2 }]" :value="null"></b-form-select>
+                        <b-form-select id="gender" class="form-control" v-model="customer.gender" :options="[{ text: 'Choose...', value: null },{ text: 'Laki-Laki', value: 1 },,{ text: 'Perempuan', value: 2 }]" :value="null" :class="errors.gender ? 'is-invalid' : ''"></b-form-select>
+                        <b-form-invalid-feedback id="gender" v-if="errors.gender">{{ errors.gender[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="marital_status" label="Marital status :" label-for="marital_status">
-                        <b-form-select id="marital_status" class="form-control" v-model="add.is_married" :options="[{ text: 'Choose...', value: null },{ text: 'Married', value: 1 },,{ text: 'Single', value: 0 }]" :value="null"></b-form-select>
+                        <b-form-select id="marital_status" class="form-control" v-model="customer.is_married" :options="[{ text: 'Choose...', value: null },{ text: 'Married', value: 1 },,{ text: 'Single', value: 0 }]" :value="null" :class="errors.is_married ? 'is-invalid' : ''"></b-form-select>
+                        <b-form-invalid-feedback id="is_married" v-if="errors.is_married">{{ errors.is_married[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="address" label="Address :" label-for="address">
-                        <b-form-textarea id="textarea" v-model="add.address" placeholder="Address" rows="3" max-rows="6"></b-form-textarea>
+                        <b-form-textarea id="textarea" v-model="customer.address" placeholder="Address" rows="3" max-rows="6" :class="errors.address ? 'is-invalid' : ''"></b-form-textarea>
+                        <b-form-invalid-feedback id="address" v-if="errors.address">{{ errors.address[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
@@ -117,46 +127,77 @@
                 </b-form>
             </b-modal>
 
-            <b-modal ref="modalEditCustomer" title="Edit User" hide-footer>
-                <b-form v-on:submit.prevent="onUpdate">
+            <b-modal id="modalEditCustomer" ref="modalEditCustomer" title="Edit User" hide-footer>
+                <b-form v-on:submit.prevent="onUpdate(customer.customer_id)">
+
                     <b-form-group id="name" label="Name :" label-for="name">
-                        <b-form-input id="name" type="text" placeholder="Enter Name" v-model="edit.name"></b-form-input>
+                        <b-form-input id="name" aria-describedby="name" type="text" placeholder="Enter Name" v-model="customer.name" :class="errors.name ? 'is-invalid' : ''"></b-form-input>
+                        <b-form-invalid-feedback id="name" v-if="errors.name">{{ errors.name[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="email" label="Email :" label-for="email">
-                        <b-form-input id="email" type="text" placeholder="Enter Email" v-model="edit.email"></b-form-input>
+                        <b-form-input id="email" type="text" placeholder="Enter Email" v-model="customer.email" :class="errors.email ? 'is-invalid' : ''"></b-form-input>
+                        <b-form-invalid-feedback id="email" v-if="errors.email">{{ errors.email[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="password" label="Password :" label-for="password">
-                        <b-form-input id="password" type="text" placeholder="Enter Password" v-model="edit.password"></b-form-input>
+                        <b-form-input id="password" type="text" placeholder="Enter Password" v-model="customer.password"></b-form-input>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="gender" label="Gender :" label-for="gender">
-                        <b-form-select id="gender" class="form-control" v-model="edit.gender" :options="[{ text: 'Choose...', value: null },{ text: 'Laki-Laki', value: 1 },,{ text: 'Perempuan', value: 2 }]" :value="null"></b-form-select>
+                        <b-form-select id="gender" class="form-control" v-model="customer.gender" :options="[{ text: 'Choose...', value: null },{ text: 'Laki-Laki', value: 1 },,{ text: 'Perempuan', value: 2 }]" :value="null" :class="errors.gender ? 'is-invalid' : ''"></b-form-select>
+                        <b-form-invalid-feedback id="gender" v-if="errors.gender">{{ errors.gender[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="marital_status" label="Marital status :" label-for="marital_status">
-                        <b-form-select id="marital_status" class="form-control" v-model="edit.is_married" :options="[{ text: 'Choose...', value: null },{ text: 'Married', value: 1 },,{ text: 'Single', value: 0 }]" :value="null"></b-form-select>
+                        <b-form-select id="marital_status" class="form-control" v-model="customer.is_married" :options="[{ text: 'Choose...', value: null },{ text: 'Married', value: 1 },,{ text: 'Single', value: 0 }]" :value="null" :class="errors.is_married ? 'is-invalid' : ''"></b-form-select>
+                        <b-form-invalid-feedback id="is_married" v-if="errors.is_married">{{ errors.is_married[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-form-group id="address" label="Address :" label-for="address">
-                        <b-form-textarea id="textarea" v-model="edit.address" placeholder="Address" rows="3" max-rows="6"></b-form-textarea>
+                        <b-form-textarea id="textarea" v-model="customer.address" placeholder="Address" rows="3" max-rows="6" :class="errors.address ? 'is-invalid' : ''"></b-form-textarea>
+                        <b-form-invalid-feedback id="address" v-if="errors.address">{{ errors.address[0] }}</b-form-invalid-feedback>
                     </b-form-group>
 
                     <br>
 
                     <b-button variant="success" type="submit">Update</b-button>
                 </b-form>
+            </b-modal>
+
+            <b-modal ref="modalDetailCustomer" title="Detail Customer" hide-footer>
+                <table class="table table-hover table-striped table-bordered">
+                    <tr>
+                        <td width="50%">Name :</td>
+                        <td>{{ customer.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email :</td>
+                        <td>{{ customer.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Gender :</td>
+                        <td>{{ customer.gender_text }}</td>
+                    </tr>
+                    <tr>
+                        <td>Marital Status :</td>
+                        <td>{{ customer.marital_text }}</td>
+                    </tr>
+                    <tr>
+                        <td>Address :</td>
+                        <td>{{ customer.address }}</td>
+                    </tr>
+                </table>
             </b-modal>
         </div>
     </div>
