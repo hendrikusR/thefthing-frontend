@@ -41,6 +41,7 @@ const customer = new Vue({
 			},
 
 			modalAddCustomer: function() {
+					this.customer = [];
 					this.$refs['modaAddCustomer'].show();
 			},
 			
