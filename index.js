@@ -66,12 +66,12 @@ const customer = new Vue({
 
 				let data = new FormData();
 
-				data.append('name', this.customer['name'])
-				data.append('email', this.customer['email'])
-				data.append('password', this.customer['password'])
-				data.append('gender', this.customer['gender'])
-				data.append('is_married', this.customer['is_married'])
-				data.append('address', this.customer['address'])
+				data.append('name', this.customer['name'] != undefined ? this.customer['name'] : '')
+                data.append('email', this.customer['email'] != undefined ? this.customer['email'] : '')
+                data.append('password', this.customer['password'] != undefined ? this.customer['password'] : '')
+                data.append('gender', this.customer['gender'] != undefined ? this.customer['gender'] : '')
+                data.append('is_married', this.customer['is_married'] != undefined ? this.customer['is_married'] : '')
+                data.append('address', this.customer['address'] != undefined ? this.customer['address'] : '')
 
 				axios.post('http://localhost:5000/customer/store', data).then(function(response){
 					Vue.$toast.success(response.data.status.message, {
@@ -92,12 +92,12 @@ const customer = new Vue({
 
 				let data = new FormData();
 
-				data.append('name', this.customer['name'])
-				data.append('email', this.customer['email'])
-				data.append('password', this.customer['password'] == undefined ? '' : this.customer['password'])
-				data.append('gender', this.customer['gender'] == null ? '' : this.customer['gender'])
-				data.append('is_married', this.customer['is_married'] == null ? '' : this.customer['is_married'])
-				data.append('address', this.customer['address'])
+                data.append('name', this.customer['name'] != undefined ? this.customer['name'] : '')
+                data.append('email', this.customer['email'] != undefined ? this.customer['email'] : '')
+                data.append('password', this.customer['password'] != undefined ? this.customer['password'] : '')
+                data.append('gender', this.customer['gender'] != null ? this.customer['gender'] : '')
+                data.append('is_married', this.customer['is_married'] != null ? this.customer['is_married'] : '')
+                data.append('address', this.customer['address'] != undefined ? this.customer['address'] : '')
 
 				axios.post('http://localhost:5000/customer/'+id+'/update', data).then(function(response){
 					Vue.$toast.success(response.data.status.message, {
