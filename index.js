@@ -20,7 +20,7 @@ const customer = new Vue({
     },
     methods: {
 			init: function() {
-				axios.get('http://thefthing-backend.local/customer').then(response => {
+				axios.get('http://localhost:5000/customer').then(response => {
 					this.customers = response.data.result.data
 				})
 			},
@@ -29,7 +29,7 @@ const customer = new Vue({
 
 					const idx = this.customers.indexOf(id)
 
-					axios.post('http://thefthing-backend.local/customer/'+id+'/delete').then(response => {
+					axios.post('http://localhost:5000/customer/'+id+'/delete').then(response => {
 
 						this.customers.splice(idx, 1)
 
@@ -48,7 +48,7 @@ const customer = new Vue({
 			modalEditCustomer: function(id) {
 				this.$refs['modalEditCustomer'].show();
 
-				axios.get('http://thefthing-backend.local/customer/edit/'+id+'').then(response => {
+				axios.get('http://localhost:5000/customer/edit/'+id+'').then(response => {
 					this.customer = response.data.result.data
 				})
 			},
@@ -56,7 +56,7 @@ const customer = new Vue({
 			modalDetailCustomer: function(id) {
 				this.$refs['modalDetailCustomer'].show();
 
-				axios.get('http://thefthing-backend.local/customer/edit/'+id+'').then(response => {
+				axios.get('http://localhost:5000/customer/edit/'+id+'').then(response => {
 					this.customer = response.data.result.data
 				})
 			},
@@ -73,7 +73,7 @@ const customer = new Vue({
 				data.append('is_married', this.customer['is_married'])
 				data.append('address', this.customer['address'])
 
-				axios.post('http://thefthing-backend.local/customer/store', data).then(function(response){
+				axios.post('http://localhost:5000/customer/store', data).then(function(response){
 					Vue.$toast.success(response.data.status.message, {
 							position: 'top-right'
 					});
@@ -99,7 +99,7 @@ const customer = new Vue({
 				data.append('is_married', this.customer['is_married'] == null ? '' : this.customer['is_married'])
 				data.append('address', this.customer['address'])
 
-				axios.post('http://thefthing-backend.local/customer/'+id+'/update', data).then(function(response){
+				axios.post('http://localhost:5000/customer/'+id+'/update', data).then(function(response){
 					Vue.$toast.success(response.data.status.message, {
 							position: 'top-right'
 					});
